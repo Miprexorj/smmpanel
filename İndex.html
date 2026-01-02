@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -6,7 +5,62 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>miprexsmm Giriş</title>
 <style>
-/* CSS burada inline olabilir */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg,#0f172a,#1e293b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+.login-box {
+  background: #111827;
+  padding: 40px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  color: #f1f5f9;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.login-box h2 {
+  margin-bottom: 30px;
+  color: #60a5fa;
+  font-size: 28px;
+  font-weight: 700;
+}
+input {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 12px;
+  background: #3b82f6;
+  color: white;
+  font-weight: 600;
+  font-size: 17px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(59,130,246,0.6);
+}
+#error {
+  color: #f87171;
+  margin-top: 12px;
+  font-weight: 600;
+}
 </style>
 </head>
 <body>
@@ -19,29 +73,29 @@
   <div id="error"></div>
 </div>
 
-<!-- Buraya yapıştır -->
 <script>
-async function login(){
+function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  try {
-    const res = await fetch("/login", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({username,password})
-    });
-    const data = await res.json();
+  fetch("/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({username, password})
+  })
+  .then(res => res.json())
+  .then(data => {
     if(data.success){
-      if(data.role==="admin") window.location.href="admin.html";
-      else window.location.href="dashboard.html";
+      if(data.role === "admin") window.location.href = "admin.html";
+      else window.location.href = "dashboard.html";
     } else {
-      document.getElementById("error").innerText="Kullanıcı adı veya şifre yanlış!";
+      document.getElementById("error").innerText = "Kullanıcı adı veya şifre yanlış!";
     }
-  } catch(err){
+  })
+  .catch(err => {
     console.error(err);
-    document.getElementById("error").innerText="Sunucu hatası!";
-  }
+    document.getElementById("error").innerText = "Sunucu hatası!";
+  });
 }
 </script>
 
