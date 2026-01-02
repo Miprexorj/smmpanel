@@ -3,113 +3,101 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>miprexsmm - Dashboard</title>
+<title>miprexsmm Giriş</title>
 <style>
-body{
-  font-family:'Poppins',sans-serif;
+body {
+  font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg,#0f172a,#1e293b);
-  margin:0; padding:0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
 }
-header{
-  background:#111827;
-  padding:20px;
-  text-align:center;
-  font-size:24px;
-  color:#60a5fa;
-  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+.login-box {
+  background: #111827;
+  padding: 40px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  color: #f1f5f9;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-.container{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  margin-top:30px;
+.login-box h2 {
+  margin-bottom: 30px;
+  color: #60a5fa;
+  font-size: 28px;
+  font-weight: 700;
 }
-.card{
-  background:#1f2937;
-  padding:20px;
-  border-radius:14px;
-  width:90%;
-  max-width:500px;
-  margin:10px 0;
-  box-shadow:0 6px 18px rgba(0,0,0,0.4);
+input {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
 }
-input,select,button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:10px;
-  font-size:16px;
-}
-button{
-  background:#3b82f6;
-  color:white;
-  font-weight:600;
-  cursor:pointer;
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 12px;
+  background: #3b82f6;
+  color: white;
+  font-weight: 600;
+  font-size: 17px;
+  cursor: pointer;
   transition: all 0.3s;
 }
-button:hover{
+button:hover {
   transform: translateY(-2px);
-  box-shadow:0 6px 18px rgba(59,130,246,0.6);
+  box-shadow: 0 6px 18px rgba(59,130,246,0.6);
 }
-#result{
-  margin-top:15px;
-  padding:10px;
-  background:#111827;
-  border-radius:10px;
-  min-height:40px;
-  color:#f1f5f9;
+#error {
+  color: #f87171;
+  margin-top: 12px;
+  font-weight: 600;
 }
 </style>
 </head>
 <body>
 
-<header>miprexsmm - Dashboard</header>
-<div class="container">
-  <div class="card">
-    <h3>Yeni Sipariş</h3>
-    <select id="service">
-      <option value="1" data-rate="100">Instagram Takipçi</option>
-      <option value="2" data-rate="100">Instagram Beğeni</option>
-    </select>
-    <input id="link" placeholder="Profil / Gönderi Linki">
-    <input id="quantity" placeholder="Miktar">
-    <input id="margin" placeholder="Kâr Marjı (%)" value="15">
-    <button onclick="order()">Sipariş Ver</button>
-    <div id="result"></div>
-  </div>
+<div class="login-box">
+  <h2>miprexsmm</h2>
+  <input id="username" placeholder="Kullanıcı Adı">
+  <input id="password" type="password" placeholder="Şifre">
+  <button onclick="login()">Giriş Yap</button>
+  <div id="error"></div>
 </div>
 
 <script>
-async function order(){
-  const sel = document.getElementById("service");
-  const ratePer1k = parseFloat(sel.selectedOptions[0].dataset.rate); // 1k TL
-  const quantity = parseInt(document.getElementById("quantity").value);
-  const margin = parseFloat(document.getElementById("margin").value);
-  const link = document.getElementById("link").value;
+function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
-  const cost = ratePer1k * (quantity / 1000);
-  const profit = cost * (margin / 100);
-  const total = cost + profit;
-
-  document.getElementById("result").innerHTML = 
-    `Maliyet: ₺${cost.toFixed(2)} <br> Kâr: ₺${profit.toFixed(2)} <br> Toplam: ₺${total.toFixed(2)}`;
-
-  // API sipariş
-  const res = await fetch("/api", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({
-      action:"add",
-      service: sel.value,
-      link,
-      quantity
-    })
+  fetch("/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({username, password})
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.success){
+      if(data.role === "admin") window.location.href = "admin.html";
+      else window.location.href = "dashboard.html";
+    } else {
+      document.getElementById("error").innerText = "Kullanıcı adı veya şifre yanlış!";
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("error").innerText = "Sunucu hatası!";
   });
-  const data = await res.json();
-  console.log("API Cevap:", data);
 }
 </script>
 
 </body>
-      </html>
+</html>
