@@ -1,0 +1,28 @@
+<div class="card">
+  <h3>Yeni Sipariş</h3>
+  <select id="service">
+    <option value="1" data-rate="100">Instagram Takipçi</option>
+    <option value="2" data-rate="100">Instagram Beğeni</option>
+  </select>
+  <input id="link" placeholder="Profil / Gönderi Linki">
+  <input id="quantity" placeholder="Miktar">
+  <input id="margin" placeholder="Kâr Marjı (%)" value="15">
+  <button onclick="order()">Sipariş Ver</button>
+  <div id="result"></div>
+</div>
+
+<script>
+function order(){
+  const sel = document.getElementById("service");
+  const ratePer1k = parseFloat(sel.selectedOptions[0].dataset.rate); // TL cinsinden 1k fiyat
+  const quantity = parseInt(document.getElementById("quantity").value);
+  const margin = parseFloat(document.getElementById("margin").value);
+
+  const cost = ratePer1k * (quantity / 1000); // Miktar / 1000 → k birim
+  const profit = cost * (margin / 100);
+  const total = cost + profit;
+
+  document.getElementById("result").innerHTML = 
+    `Maliyet: ₺${cost.toFixed(2)} <br> Kâr: ₺${profit.toFixed(2)} <br> Toplam: ₺${total.toFixed(2)}`;
+}
+    </script>
