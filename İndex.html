@@ -1,28 +1,12 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>miprexsmm Giriş</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body{
-  margin:0; font-family:'Poppins',sans-serif;
-  display:flex; justify-content:center; align-items:center; height:100vh;
-  background: linear-gradient(135deg,#0f172a,#1e293b);
-}
-.login-box{
-  background:#111827; padding:40px; border-radius:16px;
-  width:100%; max-width:400px; box-shadow:0 10px 30px rgba(0,0,0,0.5);
-  text-align:center; color:#f1f5f9;
-  animation: fadeIn 1s ease;
-}
-.login-box h2{ margin-bottom:30px; color:#60a5fa; font-size:28px; font-weight:700;}
-input{ width:100%; padding:14px; margin:12px 0; border-radius:10px; border:none; outline:none; font-size:16px;}
-button{ width:100%; padding:14px; margin-top:20px; border:none; border-radius:12px; background: linear-gradient(90deg,#3b82f6,#60a5fa); color:white; font-weight:600; font-size:17px; cursor:pointer; transition: all 0.3s;}
-button:hover{ transform: translateY(-2px); box-shadow:0 6px 18px rgba(96,165,250,0.6);}
-#error{ color:#f87171; margin-top:12px; font-weight:600;}
-@keyframes fadeIn{ 0%{opacity:0; transform:translateY(-20px);} 100%{opacity:1; transform:translateY(0);} }
+/* CSS burada inline olabilir */
 </style>
 </head>
 <body>
@@ -35,23 +19,28 @@ button:hover{ transform: translateY(-2px); box-shadow:0 6px 18px rgba(96,165,250
   <div id="error"></div>
 </div>
 
+<!-- Buraya yapıştır -->
 <script>
 async function login(){
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  const res = await fetch("/login", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ username, password })
-  });
-
-  const data = await res.json();
-  if(data.success){
-    if(data.role === "admin") window.location.href="admin.html";
-    else window.location.href="dashboard.html";
-  } else {
-    document.getElementById("error").innerText="Kullanıcı adı veya şifre yanlış!";
+  try {
+    const res = await fetch("/login", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({username,password})
+    });
+    const data = await res.json();
+    if(data.success){
+      if(data.role==="admin") window.location.href="admin.html";
+      else window.location.href="dashboard.html";
+    } else {
+      document.getElementById("error").innerText="Kullanıcı adı veya şifre yanlış!";
+    }
+  } catch(err){
+    console.error(err);
+    document.getElementById("error").innerText="Sunucu hatası!";
   }
 }
 </script>
